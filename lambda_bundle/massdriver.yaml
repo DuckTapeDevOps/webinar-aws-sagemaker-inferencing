@@ -9,13 +9,13 @@ app:
   # Environment variables can be pulled from params or connections using jq
   envs:
     S3_BUCKET: '.connections.s3_bucket.data.infrastructure.arn | split(":")[-1]'
-    SDXL_ENDPOINT_NAME: '.connections.sdxl_endpoint.data.infrastructure.arn | split(":")[-1]'
+    SDXL_ENDPOINT_NAME: '.connections.sdxl_endpoint.data.infrastructure.arn | split("/")[-1]'
     # LOG_RETENTION: .params.observability.retention_days
   # IAM permissions can be assigned to this workload using jq to pull iam from connections
   policies:
     - .connections.s3_bucket.data.security.iam.read
     - .connections.s3_bucket.data.security.iam.write
-    - .connections.sdxl_endpoint.data.security.iam.invoke.policy_arn
+    - .connections.sdxl_endpoint.data.security.iam.invoke
 
 steps:
   - path: src
@@ -32,8 +32,6 @@ params:
       required:
         - path
         - http_method
-        - path_2
-        - http_method_2
       properties:
         path:
           type: string
@@ -46,25 +44,6 @@ params:
         http_method:
           type: string
           default: POST
-          title: HTTP Method
-          description: The HTTP method(s) that this route should respond to.
-          enum:
-            - POST
-            - GET
-            - PUT
-            - DELETE
-            - HEAD
-            - OPTIONS
-            - ANY
-        path_2:
-          type: string
-          title: Path
-          description: Last path segment of this API resource. Entering {proxy+} will respond to all paths.
-          pattern: "((^[a-zA-Z0-9-_]+$)|(^\\{[a-zA-Z0-9-_]+\\}$)|(^\\{proxy\\+\\}$))"
-          message:
-            pattern: "Correct format of a path is lowercase letters, numbers, dashes and underscores. For capturing paths the same rules apply but the path must start with and end with curly braces."
-        http_method_2:
-          type: string
           title: HTTP Method
           description: The HTTP method(s) that this route should respond to.
           enum:
@@ -151,7 +130,6 @@ connections:
     - api_gateway
     - s3_bucket
     - sdxl_endpoint
-    # - llm_endpoint
   properties:
     aws_authentication:
       $ref: massdriver/aws-iam-role
@@ -161,8 +139,6 @@ connections:
       $ref: massdriver/aws-s3-bucket
     sdxl_endpoint:
       $ref: massdriver/aws-sagemaker-endpoint
-    # llm_endpoint:
-    #   $ref: massdriver/aws-sagemaker-endpoint
 
 ui:
   ui:order:
@@ -173,8 +149,6 @@ ui:
     ui:order:
       - path
       - http_method
-      - path_2
-      - http_method_2
   runtime:
     ui:order:
       - image

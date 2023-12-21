@@ -65,7 +65,6 @@ app = FastAPI()
 # Initialize SageMaker session and predictor
 sess = sagemaker.Session()
 sdxl_endpoint_name = os.environ.get("SDXL_ENDPOINT_NAME", "endpoint-name-not-set")
-llm_endpoint_name = os.environ.get("LLM_ENDPOINT_NAME", "endpoint-name-not-set")
 s3_bucket = os.environ.get("S3_BUCKET", "s3-bucket-not-set")
 
 

@@ -36,30 +36,8 @@ resource "aws_api_gateway_integration" "main" {
   uri                     = module.lambda_application.function_invoke_arn
 }
 
-resource "aws_api_gateway_resource" "mistral" {
-  rest_api_id = local.api_id
-  parent_id   = var.api_gateway.data.infrastructure.root_resource_id
-  path_part   = var.api.path_2
-}
-
-resource "aws_api_gateway_method" "mistral" {
-  rest_api_id   = local.api_id
-  resource_id   = aws_api_gateway_resource.mistral.id
-  http_method   = var.api.http_method_2
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "mistral" {
-  rest_api_id             = local.api_id
-  resource_id             = aws_api_gateway_resource.mistral.id
-  http_method             = aws_api_gateway_method.mistral.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = module.lambda_application.function_invoke_arn
-}
-
-resource "aws_iam_policy_attachment" "attach_sdxl_invoke_policy" {
-  name      = "attach_sdxl_invoke_policy"
-  roles      = [local.role_name]
-  policy_arn = var.
-}
+# resource "aws_iam_policy_attachment" "attach_sdxl_invoke_policy" {
+#   name      = "attach_sdxl_invoke_policy"
+#   roles      = [local.role_name]
+#   policy_arn = var.
+# }

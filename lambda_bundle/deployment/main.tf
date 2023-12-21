@@ -22,13 +22,3 @@ resource "aws_lambda_permission" "main" {
 
   source_arn = "${aws_api_gateway_deployment.main.execution_arn}/${var.api.http_method}/${var.api.path}"
 }
-
-
-resource "aws_lambda_permission" "mistral" {
-  statement_id  = "AllowExecutionFromAPIGatewayMistral"
-  action        = "lambda:InvokeFunction"
-  function_name = var.md_metadata.name_prefix
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_api_gateway_deployment.main.execution_arn}/${var.api.http_method_2}/${var.api.path_2}"
-}
